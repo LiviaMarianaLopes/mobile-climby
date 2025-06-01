@@ -1,6 +1,10 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import TelaInicial from "./src/pages/TelaInicial";
+
+import TelaInicial from "./src/Pages/TelaInicial"
+
+const Stack = createStackNavigator();
+
 export default function App() {
   return (
    <NavigationContainer>
