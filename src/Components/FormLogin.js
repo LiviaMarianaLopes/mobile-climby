@@ -113,7 +113,7 @@ export default function FormLogin() {
                 )}
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.registerContainer}>
+            <TouchableOpacity style={styles.registerContainer}  onPress={() => navigation.navigate("Tela Cadastro")}>
                 <Text style={styles.linkText}>Não possui conta? Cadastre-se</Text>
             </TouchableOpacity>
         </View>
