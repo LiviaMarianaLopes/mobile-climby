@@ -26,6 +26,7 @@ Este projeto refere-se à entrega do Aplicativo Móvel da Global Solution para a
 * Luana Vieira Santos da Silva - RM552994
 
 ## Vídeo Apresentação
+🎥 [Apresentação-das-funcionalidades](https://www.youtube.com/watch?v=LF7XQfzbE0o)
 
 
 ## ✨ Funcionalidades Implementadas (Aplicativo Móvel)
