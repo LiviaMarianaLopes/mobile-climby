@@ -220,93 +220,191 @@ export default function FormUserEdit() {
 }
 
 const styles = StyleSheet.create({
-    scrollContainer: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        backgroundColor: '#20B2AA', 
-        paddingVertical: 20,
-    },
-    formContainer: {
-        width: '90%',
-        maxWidth: 500,
-        alignSelf: 'center',
-        padding: 20,
-        backgroundColor: '#20B2AA',
-        borderRadius: 20,
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#20B2AA',
-    },
-    loadingText: {
-        marginTop: 10,
-        color: '#FFFFFF',
-        fontSize: 16,
-    },
-    title: {
-        fontSize: 26,
-        fontWeight: 'bold',
-        color: "#FFFFFF",
-        marginBottom: 25,
-        textAlign: 'center',
-    },
-    sectionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: "#FFFFFF",
-        marginTop: 20,
-        marginBottom: 10,
-        borderTopColor: 'rgba(255,255,255,0.3)',
-        borderTopWidth: 1,
-        paddingTop: 20,
-    },
-    label: {
-        fontSize: 14,
-        color: "#FFFFFF",
-        marginBottom: 5,
-    },
-    inputContainer: {
-        width: "100%",
-        marginBottom: 15,
-    },
-    input: {
-        backgroundColor: "#FFFFFF",
-        paddingVertical: Platform.OS === 'ios' ? 15 : 12,
-        paddingHorizontal: 18,
-        borderRadius: 10,
-        fontSize: 16,
-        color: "#333333",
-    },
-    actionButton: {
-        backgroundColor: "#FFFFFF",
-        paddingVertical: 14,
-        borderRadius: 10,
-        alignItems: "center",
-        marginTop: 25,
-        minHeight: 50,
-        justifyContent: 'center',
-    },
-    actionButtonText: {
-        color: "#20B2AA",
-        fontWeight: 'bold',
-        fontSize: 18,
-    },
-    cancelButton: {
-        backgroundColor: "transparent",
-        borderColor: "#FFFFFF",
-        borderWidth: 1.5,
-        paddingVertical: 14,
-        borderRadius: 10,
-        alignItems: "center",
-        marginTop: 15,
-        minHeight: 50,
-        justifyContent: 'center',
-    },
-    cancelButtonText: {
-        color: "#FFFFFF",
-        fontWeight: 'bold',
-        fontSize: 18,
-    }
+
+    scrollContainer: {
+
+        flexGrow: 1,
+
+        justifyContent: 'center',
+
+        paddingVertical: 20,
+
+        paddingBottom: 120,
+
+    },
+
+    formContainer: {
+
+        width: '100%',
+
+        maxWidth: 500,
+
+        alignSelf: 'center',
+
+        alignItems: "center",
+
+        padding: 25,
+
+        backgroundColor: '#20B2AA',
+
+        borderRadius: 20,
+
+
+
+    },
+
+    loadingContainer: {
+
+        flex: 1,
+
+        justifyContent: 'center',
+
+        alignItems: 'center',
+
+        backgroundColor: '#20B2AA',
+
+    },
+
+    title: {
+
+        fontSize: 26,
+
+        fontWeight: 'bold',
+
+        color: "#FFFFFF",
+
+        marginBottom: 25,
+
+        textAlign: 'center',
+
+    },
+
+    sectionTitle: {
+
+        fontSize: 18,
+
+        fontWeight: 'bold',
+
+        color: "#FFFFFF",
+
+        marginTop: 20,
+
+        marginBottom: 10,
+
+        textAlign: 'left',
+
+        width: '100%',
+
+        paddingLeft: 5,
+
+    },
+
+    label: {
+
+        fontSize: 14,
+
+        color: "#FFFFFF",
+
+        marginBottom: 5,
+
+        textAlign: 'left',
+
+        width: '100%',
+
+        paddingLeft: 5,
+
+    },
+
+    inputContainer: {
+
+        width: "100%",
+
+        marginBottom: 15,
+
+    },
+
+    input: {
+
+        backgroundColor: "#FFFFFF",
+
+        paddingVertical: Platform.OS === 'ios' ? 15 : 12,
+
+        paddingHorizontal: 18,
+
+        borderRadius: 10,
+
+        fontSize: 16,
+
+        color: "#333333",
+
+    },
+
+    actionButton: {
+
+        backgroundColor: "#FFFFFF",
+
+        borderColor: "#FFFFFF",
+
+        borderWidth: 1,
+
+        paddingVertical: 14,
+
+        borderRadius: 10,
+
+        width: '100%',
+
+        alignItems: "center",
+
+        marginTop: 25,
+
+        minHeight: 50,
+
+        justifyContent: 'center',
+
+    },
+
+    actionButtonText: {
+
+        color: "#20B2AA",
+
+        fontWeight: 'bold',
+
+        fontSize: 18,
+
+    },
+
+    cancelButton: {
+
+        backgroundColor: "transparent",
+
+        borderColor: "#FFFFFF",
+
+        borderWidth: 1,
+
+        paddingVertical: 14,
+
+        borderRadius: 10,
+
+        width: '100%',
+
+        alignItems: "center",
+
+        marginTop: 15,
+
+        minHeight: 50,
+
+        justifyContent: 'center',
+
+    },
+
+    cancelButtonText: {
+
+        color: "#FFFFFF",
+
+        fontWeight: 'bold',
+
+        fontSize: 18,
+
+    }
+
 });
