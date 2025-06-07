@@ -41,6 +41,8 @@ export default function FormLogin() {
         
         await AsyncStorage.setItem("userId", userData.id.toString());
 
+        AsyncStorage.setItem("password", senha)
+
         setLoading(false);
         navigation.navigate("Tela Home");
 

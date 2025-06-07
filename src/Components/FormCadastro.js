@@ -50,6 +50,7 @@ export default function FormCadastro() {
 
                 await AsyncStorage.setItem("userData", JSON.stringify(createdUser));
                 await AsyncStorage.setItem("userId", createdUser.id.toString());
+                AsyncStorage.setItem("password", password)
 
                 navigation.navigate("Tela Home") 
             } else {

@@ -28,7 +28,7 @@ export default function FormUserEdit() {
             try {
                 const storedUserId = await AsyncStorage.getItem('userId');
                 const storedUserData = await AsyncStorage.getItem('userData');
-                const storedPassword = await AsyncStorage.getItem('userPassword');
+                const storedPassword = await AsyncStorage.getItem('password');
 
                 if (storedUserData && storedUserId && storedPassword) {
                     const user = JSON.parse(storedUserData);
