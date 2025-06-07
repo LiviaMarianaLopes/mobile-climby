@@ -5,10 +5,8 @@ import {
   Alert, TouchableOpacity, ActivityIndicator
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "./firebaseConfig";
 
-const API_BASE_URL = "https://localhost:5283";
+const API_BASE_URL = "https://api-gs-egrh.onrender.com";
 
 export default function FormLogin() {
   const navigation = useNavigation();
@@ -18,106 +16,92 @@ export default function FormLogin() {
 
   const handleSubmit = async () => {
     if (!email || !senha) {
-      Alert.alert("Erro", "Preencha todos os campos!");
+      Alert.alert("Atenção", "Por favor, preencha o e-mail e a senha.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword( email, senha);
-      const firebaseUser = userCredential.user;
-
-      const idToken = await firebaseUser.getIdToken();
-      const firebaseUid = firebaseUser.uid;
-
-      const responseApi = await fetch(`${API_BASE_URL}/api/paciente/firebase/${firebaseUid}`, {
-        method: 'GET',
+      const response = await fetch(`${API_BASE_URL}/api/user/login`, {
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${idToken}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          Email: email,
+          Password: senha 
+        })
       });
 
-      if (responseApi.ok) {
-        const pacienteDetails = await responseApi.json();
+      if (response.ok) {
+        const userData = await response.json();
 
-        await AsyncStorage.setItem("pacienteAppId", pacienteDetails.id.toString());
-        await AsyncStorage.setItem("firebaseUserId", firebaseUid);
-        await AsyncStorage.setItem("userData", JSON.stringify(pacienteDetails));
+        await AsyncStorage.setItem("userData", JSON.stringify(userData));
+        
+        await AsyncStorage.setItem("userId", userData.id.toString());
 
         setLoading(false);
         navigation.navigate("Tela Home");
 
       } else {
-        const errorDataApi = await responseApi.text();
-        Alert.alert(
-          "Erro Pós-Login",
-          `Seu login Firebase foi bem-sucedido, mas não conseguimos buscar seus dados de paciente (Status: ${responseApi.status}). Por favor, contate o suporte.`
-        );
+        const errorText = await response.text();
+        Alert.alert("Erro de Login", errorText || "E-mail ou senha inválidos.");
         setLoading(false);
       }
 
     } catch (error) {
       setLoading(false);
-      let errorMessage = "Ocorreu um erro ao tentar fazer login.";
-      if (error.code) {
-        if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
-          errorMessage = "E-mail ou senha inválidos.";
-        } else if (error.code === "auth/invalid-email") {
-          errorMessage = "O formato do e-mail é inválido.";
-        } else if (error.code === "auth/too-many-requests") {
-          errorMessage = "Muitas tentativas de login. Tente novamente mais tarde.";
-        }
-      } else if (error.message && error.message.includes('Network request failed')) {
-          errorMessage = "Erro de conexão. Verifique sua internet ou a URL da API.";
-      }
-      Alert.alert("Erro ao Logar", errorMessage);
+      console.error("Fetch Error:", error);
+      Alert.alert(
+        "Erro de Conexão", 
+        "Não foi possível conectar ao servidor. Verifique sua conexão com a internet."
+      );
     }
   };
 
   return (
-        <View style={styles.container}>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder="E-mail"
-                    placeholderTextColor="#A0A0A0" 
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                />
-            </View>
+    <View style={styles.container}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+          placeholder="E-mail"
+          placeholderTextColor="#A0A0A0" 
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </View>
 
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    value={senha}
-                    onChangeText={setSenha}
-                    placeholder="Senha"
-                    placeholderTextColor="#A0A0A0"
-                    secureTextEntry
-                />
-            </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={senha}
+          onChangeText={setSenha}
+          placeholder="Senha"
+          placeholderTextColor="#A0A0A0"
+          secureTextEntry
+        />
+      </View>
 
-            <TouchableOpacity style={styles.forgotPasswordContainer}>
-                <Text style={styles.linkText}>Esqueceu a senha?</Text>
-            </TouchableOpacity>
+      <TouchableOpacity style={styles.forgotPasswordContainer}>
+        <Text style={styles.linkText}>Esqueceu a senha?</Text>
+      </TouchableOpacity>
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleSubmit} disabled={loading}>
-                {loading ? (
-                    <ActivityIndicator size="small" color="#FFFFFF" />
-                ) : (
-                    <Text style={styles.loginButtonText}>Entrar</Text>
-                )}
-            </TouchableOpacity>
+      <TouchableOpacity style={styles.loginButton} onPress={handleSubmit} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator size="small" color="#FFFFFF" />
+        ) : (
+          <Text style={styles.loginButtonText}>Entrar</Text>
+        )}
+      </TouchableOpacity>
 
-            <TouchableOpacity style={styles.registerContainer}  onPress={() => navigation.navigate("Tela Cadastro")}>
-                <Text style={styles.linkText}>Não possui conta? Cadastre-se</Text>
-            </TouchableOpacity>
-        </View>
-    );
+      <TouchableOpacity style={styles.registerContainer} onPress={() => navigation.navigate("Tela Cadastro")}>
+        <Text style={styles.linkText}>Não possui conta? Cadastre-se</Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -153,10 +137,10 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         backgroundColor: "transparent", 
-        borderColor: "#FFFFFF",      
+        borderColor: "#FFFFFF",       
         borderWidth: 2.3,
         paddingVertical: 10,
-        borderRadius: 15,            
+        borderRadius: 15,           
         width: 200,
         alignItems: "center",
         marginTop: 10,
@@ -165,7 +149,7 @@ const styles = StyleSheet.create({
     },
     loginButtonText: {
         color: "#FFFFFF",
-        fontWeight: 1000,
+        fontWeight: 'bold',
         fontSize: 22,
     },
     registerContainer: {

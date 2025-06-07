@@ -4,56 +4,69 @@ import {
     View, Text, TextInput, StyleSheet,
     Alert, TouchableOpacity, ActivityIndicator, ScrollView, Platform
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_BASE_URL = "https://localhost:5283:";
+const API_BASE_URL = "https://api-gs-egrh.onrender.com"; 
 
 export default function FormCadastro() {
     const navigation = useNavigation();
-    const [nome, setNome] = useState("");
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
-    const [senha, setSenha] = useState("");
+    const [password, setPassword] = useState("");
     const [confirmarSenha, setConfirmarSenha] = useState("");
     const [country, setCountry] = useState("");
     const [city, setCity] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async () => {
-        if (!nome || !email || !senha || !confirmarSenha || !country || !city) {
-            Alert.alert("Erro", "Preencha todos os campos obrigatórios!");
+        if (!name || !email || !password || !confirmarSenha || !country || !city) {
+            Alert.alert("Atenção", "Preencha todos os campos obrigatórios!");
             return;
         }
-        if (senha !== confirmarSenha) {
-            Alert.alert("Erro", "As senhas não coincidem!");
+        if (password !== confirmarSenha) {
+            Alert.alert("Atenção", "As senhas não coincidem!");
             return;
         }
+
         setLoading(true);
-        const userCreateDto = { nome, email, senha, country, city };
+
+        const userCreateDto = {
+            Name: name,
+            Email: email,
+            Password: password,
+            Country: country,
+            City: city,
+        };
+
         try {
             const response = await fetch(`${API_BASE_URL}/api/user`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userCreateDto),
             });
-            setLoading(false);
-            if (response.ok) {
-                Alert.alert(
-                    "Sucesso",
-                    "Conta criada com sucesso! Por favor, faça login.",
-                    [{ text: "OK", onPress: () => navigation.navigate("Tela Inicial") }] 
-                );
+
+            if (response.status === 201) {
+                const createdUser = await response.json();
+
+                await AsyncStorage.setItem("userData", JSON.stringify(createdUser));
+                await AsyncStorage.setItem("userId", createdUser.id.toString());
+
+                navigation.navigate("Tela Home") 
             } else {
-                const errorData = await response.json().catch(() => ({ message: "Erro ao processar a resposta do servidor." }));
+                const errorText = await response.text();
                 Alert.alert(
                     "Erro ao criar conta",
-                    errorData.message || errorData.title || `Erro ${response.status}: Verifique os dados e tente novamente.`
+                    errorText || `Erro ${response.status}: Verifique os dados e tente novamente.`
                 );
             }
         } catch (error) {
-            setLoading(false);
+            console.error(error);
             Alert.alert(
-                "Erro de conexão",
-                "Não foi possível se conectar ao servidor. Tente novamente mais tarde."
+                "Erro de Conexão",
+                "Não foi possível se conectar ao servidor. Verifique sua rede e a URL da API."
             );
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -71,8 +84,8 @@ export default function FormCadastro() {
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
-                        value={nome}
-                        onChangeText={setNome}
+                        value={name}
+                        onChangeText={setName}
                         placeholder="Nome completo"
                         placeholderTextColor={placeholderColor}
                         editable={!loading}
@@ -93,9 +106,9 @@ export default function FormCadastro() {
                 <View style={styles.inputContainer}>
                     <TextInput
                         style={styles.input}
-                        value={senha}
-                        onChangeText={setSenha}
-                        placeholder="Senha"
+                        value={password}
+                        onChangeText={setPassword}
+                        placeholder="Senha (mínimo 6 caracteres)"
                         placeholderTextColor={placeholderColor}
                         secureTextEntry
                         editable={!loading}
@@ -146,8 +159,8 @@ export default function FormCadastro() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={styles.secondaryLinkContainer} 
-                    onPress={() => navigation.navigate("Tela Inicial")} 
+                    style={styles.secondaryLinkContainer}
+                    onPress={() => navigation.navigate("Tela Inicial")}
                     disabled={loading}
                 >
                     <Text style={styles.linkText}>Já tem uma conta? Faça login</Text>
@@ -157,8 +170,9 @@ export default function FormCadastro() {
     );
 }
 
+
 const styles = StyleSheet.create({
-    scrollContainer: { 
+    scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -166,38 +180,38 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         width: '100%', 
-        maxWidth: 400, 
+        maxWidth: 400,
         alignItems: "center",
-        paddingBottom: 20, 
+        paddingBottom: 20,
     },
     title: {
-        fontSize: 28, 
+        fontSize: 28,
         fontWeight: 'bold',
-        color: "#FFFFFF", 
-        marginBottom: 30, 
+        color: "#FFFFFF",
+        marginBottom: 30,
         textAlign: 'center',
     },
     inputContainer: {
         width: "100%", 
         marginBottom: 15,
+        alignItems: 'center'
     },
     input: {
-        width: 300,
         backgroundColor: "#FFFFFF",
         paddingVertical: Platform.OS === 'ios' ? 16 : 14,
         paddingHorizontal: 20,
-        borderRadius: 15, 
+        borderRadius: 15,
         fontSize: 16,
-        color: "#333333", 
+        color: "#333333",
+        width: 300,
     },
-    actionButton: { 
+    actionButton: {
         backgroundColor: "transparent",
         borderColor: "#FFFFFF",
         borderWidth: 2.3,
-        paddingVertical: 12, 
+        paddingVertical: 12,
         borderRadius: 15,
-        width: '80%', 
-        maxWidth: 250, 
+        width: 250, 
         alignItems: "center",
         marginTop: 25,
         minHeight: 50,
